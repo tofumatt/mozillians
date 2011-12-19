@@ -102,6 +102,21 @@
           {% endfor %}
         {% endif %}
 
+        {% for f in ['street', 'city', 'province', 'postal_code', 'country'] %}
+          <div id="{{ form[f].name }}-container"
+               class="field {{ 'error' if form.errors[f] }}">
+
+            {{ form[f].label_tag() }}
+
+            {{ form.errors[f] }}
+            {{ form[f] }}
+
+            <div class="clear"></div>
+          </div>
+        {% endfor %}
+
+        <div class="clear"></div>
+
         <h2>{{ _('My Login Info') }}</h2>
 
         <dl id="email-container">

@@ -60,6 +60,18 @@
     {% set img = thumbnail(profile.photo, '200x200', crop="center", default="img/unknown.png") %}
     <img id="profile-photo" src="{{ img.url }}" alt="{{ _('Profile Picture') }}">
 
+    <div id="image-and-location" style="float: left; width: 200px;">
+      {{ profile_photo(person) }}
+
+      {% if profile.user.address.formatted() %}
+        <a href="http://maps.google.com/maps?q={{ profile.user.address.formatted('city', 'province', 'country', locale=LANG)|urlencode }}" id="map-image">
+          <img src="//maps.googleapis.com/maps/api/staticmap?center={{ profile.user.address.formatted('city', 'province', 'country', locale=LANG)|urlencode }}&amp;zoom=10&amp;size=175x175&amp;sensor=false" alt="{{ _('Location') }}">
+        </a>
+      {% endif %}
+
+      <div class="clear"></div>
+    </div>
+
     {% if shown_user.username == request.user.username %}
       <a href="{{ url('profile.edit') }}"
          class="button primary small" id="edit-profile">
@@ -95,9 +107,12 @@
           </dd>
         {% endif %}
 
-        {% if profile.location %}
-          <dt>{{ _('Location') }}</dt>
-          <dd>{{ profile.location }}</dd>
+        {% if profile.user.address.formatted() %}
+          <dt class="location">{{ _('Location') }}</dt>
+          <dd class="location">
+            {{ profile.user.address.formatted('city', 'province', 'country',
+                                              locale=LANG) }}
+          </dd>
         {% endif %}
 
         {% if profile.vouched_by %}
@@ -110,9 +125,6 @@
           </dd>
         {% endif %}
       </dl>
-    </div>
-
-    <div class="clear"></div>
 
     {% if profile.bio %}
       <h3>{{ _('Bio:') }}{# L10n: Biography #}</h3>
@@ -131,14 +143,14 @@
             {% if request.user.get_profile().is_vouched %}
               <a href="{{ url('group', group.id, group.url) }}">
                 {{ group.name }}
-              </a>
-            {% else %}
-              {{ group.name }}
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <div class="clear"></div>
+    </div>
 
     <div class="clear"></div>
   </div>

@@ -559,6 +559,31 @@ em.underline {
     height: auto;
 }
 
+#body-edit-profile #city-container,
+#body-edit-profile #province-container,
+#body-edit-profile #postal_code-container,
+#body-edit-profile #country-container {
+    float: left;
+    width: 50%;
+}
+
+#body-edit-profile #id_city {
+    width: 130px;
+}
+
+#body-edit-profile #id_province,
+#body-edit-profile #id_postal_code {
+    width: 100px;
+}
+
+#body-edit-profile #id_postal_code {
+    width: 100px;
+}
+
+#body-edit-profile #id_country {
+    width: 150px;
+}
+
 #body-edit-profile #manage-profile {
     float: right;
     margin: -35px 15px 0 0;
@@ -636,13 +661,22 @@ em.underline {
     width: 70%;
 }
 
-#body-profile #profile-photo {
-    border: 1px solid #226b87;
+#body-profile #image-and-location {
     display: inline-block;
     float: left;
-    margin: 0 25px 0 0;
+    width: 200px;
+}
+
+#body-profile #profile-photo, #body-profile #map-image {
+    border: 1px solid #226b87;
+    display: inline-block;
+    margin: 0 25px 12.5px 0;
     max-height: 175px;
     max-width: 175px;
+}
+
+#body-profile #groups-header {
+    margin: 15px 0 5px;
 }
 
 #body-profile #edit-profile {

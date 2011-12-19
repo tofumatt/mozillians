@@ -6,9 +6,12 @@ from django.conf import settings
 from django.core.urlresolvers import resolve
 
 import happyforms
+import Image
+from easy_thumbnails import processors
+from product_details import product_details
 from tower import ugettext as _, ugettext_lazy as _lazy
 
-
+from locations.models import Address, Country, PostalCode
 from phonebook.models import Invite
 from groups.models import Group
 from users.models import User, UserProfile
@@ -107,8 +110,6 @@ class ProfileForm(UserForm):
     city = forms.CharField(label=_lazy(u'City'), required=False)
     # TODO: Add validation of states/provinces/etc. for known/large countries.
     province = forms.CharField(label=_lazy(u'Province/State'), required=False)
-    # TODO: Add list of countries.
-    country = forms.CharField(label=_lazy(u'Country'), required=False)
     postal_code = forms.CharField(label=_lazy(u'Postal/Zip Code'),
                                   required=False)
 
@@ -118,6 +119,26 @@ class ProfileForm(UserForm):
         widgets = {
             'bio': forms.Textarea(),
         }
+
+    def __init__(self, *args, **kwargs):
+        """Add a locale-aware list of countries to the form."""
+        locale = kwargs.get('locale', 'en-US')
+        if kwargs.get('locale'):
+            del kwargs['locale']
+
+        super(ProfileForm, self).__init__(*args, **kwargs)
+
+        self.fields['country'] = forms.ChoiceField(label=_lazy(u'Country'),
+                required=False, choices=([['', '--']] +
+                                         Country.localized_list(locale)))
+
+    def clean_country(self):
+        """Return a country object for the country selected (None if empty)."""
+        if not self.cleaned_data['country']:
+            return None
+
+        country = Country.objects.filter(id=self.cleaned_data['country'])
+        return country[0] if country else None
 
     def clean_groups(self):
         """Groups are saved in lowercase because it's easy and consistent."""
@@ -139,6 +160,33 @@ class ProfileForm(UserForm):
         """Save the data to profile."""
         self._save_groups(request)
         super(ProfileForm, self).save(request.user)
+
+        # TODO: Not needed/put in ProfileForm?
+        """
+        profile = request.user.get_profile()
+        profile.website = self.cleaned_data['website']
+
+        address = request.user.address
+        address.street = self.cleaned_data['street']
+        address.city = self.cleaned_data['city']
+        address.province = self.cleaned_data['province']
+        address.country = self.cleaned_data['country']
+
+        if self.cleaned_data['postal_code']:
+            postal_code, created = PostalCode.objects.get_or_create(
+                    code=self.cleaned_data['postal_code'])
+            address.postal_code = postal_code
+        else:
+            address.postal_code = None
+
+        address.save()
+        profile.save()
+        """
+
+    def _process_location_data(self):
+        """Process the location data sanely so it can be saved."""
+        # self.
+        pass
 
     def _save_groups(self, request):
         """Parse a string of (usually comma-demilited) groups and save them."""

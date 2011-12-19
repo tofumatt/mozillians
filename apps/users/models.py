@@ -15,6 +15,7 @@ from funfactory.urlresolvers import reverse
 from sorl.thumbnail import ImageField
 from tower import ugettext as _, ugettext_lazy as _lazy
 
+from locations.models import Address
 from groups.models import Group
 from phonebook.models import get_random_string
 
@@ -155,6 +156,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     dn = '%s %s' % (instance.first_name, instance.last_name)
 
     if created:
+        address = Address.objects.create(user=instance)
         UserProfile.objects.create(user=instance, display_name=dn)
     else:
         u = UserProfile.objects.get(user=instance)

@@ -75,7 +75,13 @@ def edit_profile(request):
                        bio=profile.bio,
                        website=profile.website,
                        irc_nickname=profile.ircname,
-                       groups=user_groups,)
+                       groups=user_groups,
+                       street=request.user.address.street,
+                       city=request.user.address.city,
+                       province=request.user.address.province,
+                       postal_code=request.user.address.postal_code,
+                       country=(request.user.address.country.id
+                                if request.user.address.country else None))
 
         if not request.user.username.startswith('u/'):
             initial.update(username=request.user.username)
