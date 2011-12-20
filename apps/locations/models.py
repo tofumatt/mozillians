@@ -39,11 +39,7 @@ class Country(models.Model):
         """Return the name of this country in the locale specified.
 
         Defaults to en-US if no locale is specified.
-
-        TODO: Keep this part in? Write the helper? Whatever.
-        You probably don't want this method: you probably want to use the
-        ``localize_country()`` helper which doesn't require passing the
-        locale in all the time."""
+        """
         return product_details.get_regions(locale)[self.code]
 
     def __unicode__(self):
