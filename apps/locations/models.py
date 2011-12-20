@@ -13,7 +13,14 @@ COUNTRIES = product_details.get_regions('en-US')
 
 
 class Country(models.Model):
-    """The largest container for a location (state, city, etc.)."""
+    """The largest container for a location (state, city, etc.).
+
+    Our list of countries is populated and localized by the ``product_details``
+    library. It is *not* a user-generated list and should not be modified by
+    hand; let ``product_details`` take care of everything.
+
+    If it turns out we're missing a country, we should address it upstream.
+    """
     @classmethod
     def localized_list(cls, locale='en-US'):
         """A list of all countries in the DB, with their names localized."""
