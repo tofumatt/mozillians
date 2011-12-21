@@ -17,6 +17,7 @@ from tower import ugettext as _, ugettext_lazy as _lazy
 
 from locations.models import Address
 from groups.models import Group
+from locations.models import Address
 from phonebook.models import get_random_string
 
 

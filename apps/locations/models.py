@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 
 from product_details import product_details
+
 from locations.tasks import geocode_address
 
 
@@ -32,7 +33,8 @@ class Country(models.Model):
                             choices=COUNTRIES.items())
 
     #: We don't use SPATIAL indexes because we're using MySQL InnoDB tables.
-    #: TODO: Remove the lack of indexes when we go PostgreSQL.
+    #: TODO: Add indexes when we go PostgreSQL by removing the
+    #:       ``spatial_index=False`` argument.
     poly = models.PolygonField(null=True, spatial_index=False)
 
     def name(self, locale='en-US'):
@@ -48,6 +50,7 @@ class Country(models.Model):
 
 
 class Address(models.Model):
+    """An address is a user's full street address including country."""
     #: An address belongs to a User. They're created when a User is created.
     user = models.OneToOneField(User)
 
@@ -58,7 +61,7 @@ class Address(models.Model):
     country = models.ForeignKey('Country', null=True)
 
     #: We don't use SPATIAL indexes because we're using MySQL InnoDB tables.
-    #: TODO: Remove the lack of indexes when we go PostgreSQL.
+    #: TODO: Add indexes when we go PostgreSQL.
     point = models.PointField(null=True, spatial_index=False)
 
     objects = models.GeoManager()
@@ -71,7 +74,7 @@ class Address(models.Model):
 
         address = ', '.join([unicode(getattr(self, a)) for a in args
                 if a is not 'country' and getattr(self, a)])
-        
+
         if self.country and locale:
             return '%s, %s' % (address, self.country.name(locale))
         elif self.country:
@@ -88,7 +91,7 @@ class Address(models.Model):
 class PostalCode(models.Model):
     code = models.CharField(max_length=50, null=True)
     #: We don't use SPATIAL indexes because we're using MySQL InnoDB tables.
-    #: TODO: Remove the lack of indexes when we go PostgreSQL.
+    #: TODO: Add indexes when we go PostgreSQL.
     poly = models.PolygonField(null=True, spatial_index=False)
 
     objects = models.GeoManager()

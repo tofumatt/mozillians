@@ -11,6 +11,7 @@ from easy_thumbnails import processors
 from product_details import product_details
 from tower import ugettext as _, ugettext_lazy as _lazy
 
+from groups.models import Group
 from locations.models import Address, Country, PostalCode
 from phonebook.models import Invite
 from groups.models import Group
