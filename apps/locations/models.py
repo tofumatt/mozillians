@@ -10,7 +10,7 @@ from locations.tasks import geocode_address
 
 # Country keys are the same in all languages, so it doesn't matter which
 # locale we use.
-COUNTRIES = product_details.get_regions('en-US')
+COUNTRIES = {}# product_details.get_regions('en-US')
 
 
 class Country(models.Model):
